@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
-import Admindashboard from './components/Dashboard/Admindashboard';
+import AdminDashboard from './components/Dashboard/AdminDashboard';
 import LoginDo from './components/Auth/LoginDo';
 import SignUp from './components/Auth/SignUp';
 import { AuthContext } from './context/AuthProvider';
@@ -60,7 +60,7 @@ const App = () => {
           <LoginDo handleLogin={handleLogin} setShowSignUp={setShowSignUp} />
         )
       ) : ''}
-      {user === 'admin' ? <Admindashboard ChangeUser={setUser} /> : (user === 'employee' ? <EmployeeDashboard ChangeUser={setUser} employeedata={loggedInUserData} /> : null)}
+      {user === 'admin' ? <AdminDashboard ChangeUser={setUser} /> : (user === 'employee' ? <EmployeeDashboard ChangeUser={setUser} employeedata={loggedInUserData} /> : null)}
     </>
   )
 }
