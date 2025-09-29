@@ -1,4 +1,4 @@
-// localStorage.clear();
+
 const admin = [
     {
     "id": "A001",
