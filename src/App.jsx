@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import Login from './components/Auth/Login';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 import Admindashboard from './components/Dashboard/Admindashboard';
 import LoginDo from './components/Auth/LoginDo';
-import { getlocalStorage, setlocalStorage } from './utils/localstorage';
+import SignUp from './components/Auth/SignUp';
 import { AuthContext } from './context/AuthProvider';
 
 const App = () => {
   const [user, setUser] = useState(null);
   const [loggedInUserData, setLoggedInUserData] = useState(null)
   const [userData, setUserData] = useContext(AuthContext)
+  const [showSignUp, setShowSignUp] = useState(false)
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('loggedInUser');
@@ -53,10 +53,18 @@ const App = () => {
 
   return (
     <>
-      {!user ? <LoginDo handleLogin={handleLogin} /> : ''}
+      {!user ? (
+        showSignUp ? (
+          <SignUp setShowSignUp={setShowSignUp} handleLogin={handleLogin} />
+        ) : (
+          <LoginDo handleLogin={handleLogin} setShowSignUp={setShowSignUp} />
+        )
+      ) : ''}
       {user === 'admin' ? <Admindashboard ChangeUser={setUser} /> : (user === 'employee' ? <EmployeeDashboard ChangeUser={setUser} employeedata={loggedInUserData} /> : null)}
     </>
   )
 }
+
+console.log (JSON.parse(localStorage.getItem('employees')));
 
 export default App

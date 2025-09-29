@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { AuthContext } from '../../context/AuthProvider';
 
 const Createtask = () => {
@@ -9,6 +9,14 @@ const Createtask = () => {
   const [taskDate, setTaskDate] = useState("");
   const [assignTo, setAssignTo] = useState("")
   const [category, setCategory] = useState("");
+  const [employees, setEmployees] = useState([])
+
+  // Update employees list when userData changes
+  useEffect(() => {
+    if (userData) {
+      setEmployees(userData)
+    }
+  }, [userData])
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -104,9 +112,9 @@ const Createtask = () => {
             value={assignTo}
             onChange={(e) => setAssignTo(e.target.value)}
             required
-            className='text-white mt-1.5 w-full p-2 mb-4 rounded bg-[#3A3A3A] placeholder:text-[#a0a0a0]'>
+            className="w-full bg-[#3A3A3A] text-white mt-1.5 p-2 mb-4 rounded outline-none">
             <option value="">Select Employee</option>
-            {userData && userData.map((emp) => (
+            {employees && employees.map((emp) => (
               <option key={emp.id} value={emp.name}>{emp.name}</option>
             ))}
           </select>

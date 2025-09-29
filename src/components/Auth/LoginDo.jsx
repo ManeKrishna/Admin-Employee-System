@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
 
-const Login = ({handleLogin}) => {
-
-
-  const [email, setemail] = useState("")
+const LoginDo = ({ handleLogin, setShowSignUp }) => {
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  
-
   const submitLogin = (e) => {
     e.preventDefault();
-    handleLogin(email,password)
-    setemail("");
+    handleLogin(email, password)
+    setEmail("");
     setPassword("");
   };
 
@@ -36,11 +32,11 @@ const Login = ({handleLogin}) => {
           <h1 className='text-white text-4xl w-fit'>Log In</h1>
         </div>
 
-        <form onSubmit={(e) => submitLogin(e)} className='flex flex-col justify-center items-center'>
+        <form onSubmit={submitLogin} className='flex flex-col justify-center items-center'>
           {/* Email Input */}
           <input
             value={email}
-            onChange={(e) => setemail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className='text-white py-3 px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-xl placeholder:text-gray-400 w-full'
             type="email"
@@ -63,12 +59,10 @@ const Login = ({handleLogin}) => {
               className='absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors'
             >
               {showPassword ? (
-                // Eye Off Icon
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                 </svg>
               ) : (
-                // Eye Icon
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -115,7 +109,9 @@ const Login = ({handleLogin}) => {
         {/* Sign Up Option */}
         <div className='mt-6 text-center text-sm text-gray-400'>
           Don't have an account?{' '}
-          <button className='text-purple-400 hover:text-purple-300 hover:underline font-medium transition-colors'>
+          <button 
+            onClick={() => setShowSignUp(true)}
+            className='text-purple-400 hover:text-purple-300 hover:underline font-medium transition-colors'>
             Sign up here
           </button>
         </div>
@@ -124,4 +120,4 @@ const Login = ({handleLogin}) => {
   )
 }
 
-export default Login
+export default LoginDo
