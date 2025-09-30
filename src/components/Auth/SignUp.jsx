@@ -20,7 +20,6 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
   const handleSignUp = (e) => {
     e.preventDefault()
 
-    // Validation
     if (password !== confirmPassword) {
       alert("Passwords do not match!")
       return
@@ -31,14 +30,12 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
       return
     }
 
-    // Check if email already exists
     const emailExists = userData?.some(emp => emp.email === email)
     if (emailExists) {
       alert("Email already registered! Please use a different email.")
       return
     }
 
-    // Create new employee object
     const newEmployee = {
       id: generateEmployeeId(),
       name: name,
@@ -53,65 +50,58 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
       tasks: []
     }
 
-    // Update context and localStorage
     const updatedEmployees = [...userData, newEmployee]
     setUserData(updatedEmployees)
 
     alert("Registration successful! Please login with your credentials.")
     
-    // Clear form
     setName("")
     setEmail("")
     setPassword("")
     setConfirmPassword("")
-    
-    // Switch to login page
     setShowSignUp(false)
   }
 
   return (
-    <div className='flex h-screen w-screen items-center justify-center bg-black'>
-      <div className='border-2 py-7 px-7 rounded-2xl shadow-lg bg-black text-white p-6 shadow-[rgba(168,85,247,0.4)_0px_50px_100px_-20px,rgba(147,51,234,0.4)_0px_30px_60px_-30px,rgba(192,132,252,0.45)_0px_-2px_6px_0px_inset] max-w-md w-full mx-4'>
-        <div className='h-8 mb-7 flex justify-center items-center'>
-          <h1 className='text-white text-4xl w-fit'>Sign Up</h1>
+    <div className='flex min-h-screen w-full items-center justify-center bg-black p-4'>
+      <div className='border-2 py-6 px-6 sm:py-7 sm:px-7 rounded-2xl shadow-lg bg-black text-white shadow-[rgba(168,85,247,0.4)_0px_50px_100px_-20px,rgba(147,51,234,0.4)_0px_30px_60px_-30px,rgba(192,132,252,0.45)_0px_-2px_6px_0px_inset] max-w-md w-full'>
+        <div className='mb-6 sm:mb-7 flex justify-center items-center'>
+          <h1 className='text-white text-3xl sm:text-4xl font-semibold'>Sign Up</h1>
         </div>
 
         <form onSubmit={handleSignUp} className='flex flex-col justify-center items-center'>
-          {/* Name Input */}
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className='text-white py-3 px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-xl placeholder:text-gray-400 w-full'
+            className='text-white py-2.5 px-6 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full'
             type="text"
             placeholder='Enter your full name'
           />
 
-          {/* Email Input */}
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className='text-white py-3 px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-xl placeholder:text-gray-400 w-full mt-3'
+            className='text-white py-2.5 px-6 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full mt-3'
             type="email"
             placeholder='Enter your email'
           />
 
-          {/* Password Input with Toggle */}
           <div className='relative w-full mt-3'>
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength="6"
-              className='text-white py-3 px-9 pr-12 border-purple-400 border-2 rounded-full outline-none bg-transparent text-xl placeholder:text-gray-400 w-full'
+              className='text-white py-2.5 px-6 pr-12 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full'
               type={showPassword ? "text" : "password"}
               placeholder='Enter password'
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className='absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors'
+              className='absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors'
             >
               {showPassword ? (
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,21 +116,20 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
             </button>
           </div>
 
-          {/* Confirm Password Input with Toggle */}
           <div className='relative w-full mt-3'>
             <input
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength="6"
-              className='text-white py-3 px-9 pr-12 border-purple-400 border-2 rounded-full outline-none bg-transparent text-xl placeholder:text-gray-400 w-full'
+              className='text-white py-2.5 px-6 pr-12 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full'
               type={showConfirmPassword ? "text" : "password"}
               placeholder='Confirm password'
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className='absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors'
+              className='absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors'
             >
               {showConfirmPassword ? (
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,22 +144,19 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
             </button>
           </div>
 
-          {/* Password Requirements */}
-          <div className='w-full mt-3 text-xs text-gray-400 px-2'>
+          <div className='w-full mt-2 sm:mt-3 text-xs text-gray-400 px-2'>
             <p>Password must be at least 6 characters long</p>
           </div>
 
-          {/* Sign Up Button */}
           <button
             type="submit"
-            className='transition-transform hover:scale-110 duration-300 py-2 px-5 border-purple-400 border-none rounded-full outline-none bg-gradient-to-r from-purple-400 to-red-300 text-xl placeholder:text-white mt-7 min-w-[120px]'
+            className='transition-transform hover:scale-110 duration-300 py-2 px-5 border-none rounded-full outline-none bg-gradient-to-r from-purple-400 to-red-300 text-lg sm:text-xl mt-6 sm:mt-7 min-w-[120px]'
           >
             Sign Up
           </button>
         </form>
 
-        {/* Login Option */}
-        <div className='mt-6 text-center text-sm text-gray-400'>
+        <div className='mt-5 sm:mt-6 text-center text-xs sm:text-sm text-gray-400'>
           Already have an account?{' '}
           <button 
             onClick={() => setShowSignUp(false)}

@@ -6,10 +6,15 @@ import Footer from '../Tasklist/footer'
 
 function AdminDashboard(props) {
   return (
-    <div className='h-screen bg-[#1e1e1e] pt-8 pl-8 pr-8 overflow-auto'>
+    <div className='min-h-screen bg-[#1e1e1e] p-4 sm:p-6 lg:p-8 overflow-auto'>
       <Header ChangeUser={props.ChangeUser} />
-      <Createtask />
-      <Taskstatus />
+      
+      {/* Desktop: Side by side, Mobile: Stacked */}
+      <div className='flex flex-col lg:flex-row gap-6 lg:gap-4'>
+        <Createtask />
+        <Taskstatus />
+      </div>
+      
       <Footer />
     </div>
   )
