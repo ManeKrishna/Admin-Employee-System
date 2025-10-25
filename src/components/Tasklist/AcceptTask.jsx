@@ -79,7 +79,7 @@ const AcceptTask = ({ employeedata }) => {
   }
 
   return (
-    <div className='flex-shrink-0 h-full w-[280px] sm:w-[300px] bg-yellow-400 rounded-xl flex flex-col'>
+    <div className='flex-shrink-0 h-full md:w-[300px] w-full bg-yellow-400 rounded-xl flex flex-col'>
       <div className='flex justify-between px-4 sm:px-6 py-4 sm:py-5 items-center'>
         <h2 className='bg-red-700 text-sm sm:text-base text-white px-2 sm:px-3 py-1 rounded-xl'>{employeedata.category}</h2>
         <h3 className='text-xs sm:text-sm font-semibold'>{employeedata.taskDate}</h3>

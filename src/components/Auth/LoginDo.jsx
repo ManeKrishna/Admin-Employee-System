@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import AdminDebugButton from '../Debug/AdminDebugButton';
 
 const LoginDo = ({ handleLogin, setShowSignUp }) => {
   const [email, setEmail] = useState("")
@@ -117,7 +116,7 @@ const LoginDo = ({ handleLogin, setShowSignUp }) => {
           </button>
         </div>
       </div>
-      <AdminDebugButton />
+
     </div>
   )
 }
