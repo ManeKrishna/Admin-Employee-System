@@ -1,65 +1,85 @@
+// src/components/Auth/SignUp.jsx
 import React, { useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthProvider'
+import { addEmployee, getEmployeeByEmail } from '../../services/firebaseServices'
 
 const SignUp = ({ setShowSignUp, handleLogin }) => {
-  const [userData, setUserData] = useContext(AuthContext)
+  const [userData] = useContext(AuthContext)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const generateEmployeeId = () => {
-    if (!userData) return "E001"
-    const lastEmployee = userData[userData.length - 1]
-    const lastId = parseInt(lastEmployee.id.substring(1))
-    return `E${String(lastId + 1).padStart(3, '0')}`
+    if (!userData || userData.length === 0) return "E001"
+    
+    // Find the highest employee ID number
+    const maxId = userData.reduce((max, emp) => {
+      const idNum = parseInt(emp.id.substring(1))
+      return idNum > max ? idNum : max
+    }, 0)
+    
+    return `E${String(maxId + 1).padStart(3, '0')}`
   }
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!")
-      return
+    try {
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!")
+        setIsLoading(false)
+        return
+      }
+
+      if (password.length < 6) {
+        alert("Password must be at least 6 characters long!")
+        setIsLoading(false)
+        return
+      }
+
+      // Check if email already exists in Firestore
+      const existingEmployee = await getEmployeeByEmail(email)
+      if (existingEmployee) {
+        alert("Email already registered! Please use a different email.")
+        setIsLoading(false)
+        return
+      }
+
+      const newEmployee = {
+        id: generateEmployeeId(),
+        name: name,
+        email: email,
+        password: password,
+        taskCount: {
+          active: 0,
+          completed: 0,
+          failed: 0,
+          new: 0
+        },
+        tasks: []
+      }
+
+      // Add to Firestore
+      await addEmployee(newEmployee)
+
+      alert("Registration successful! Please login with your credentials.")
+      
+      setName("")
+      setEmail("")
+      setPassword("")
+      setConfirmPassword("")
+      setShowSignUp(false)
+    } catch (error) {
+      console.error('Signup error:', error)
+      alert("Registration failed. Please try again.")
+    } finally {
+      setIsLoading(false)
     }
-
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters long!")
-      return
-    }
-
-    const emailExists = userData?.some(emp => emp.email === email)
-    if (emailExists) {
-      alert("Email already registered! Please use a different email.")
-      return
-    }
-
-    const newEmployee = {
-      id: generateEmployeeId(),
-      name: name,
-      email: email,
-      password: password,
-      taskCount: {
-        active: 0,
-        completed: 0,
-        failed: 0,
-        new: 0
-      },
-      tasks: []
-    }
-
-    const updatedEmployees = [...userData, newEmployee]
-    setUserData(updatedEmployees)
-
-    alert("Registration successful! Please login with your credentials.")
-    
-    setName("")
-    setEmail("")
-    setPassword("")
-    setConfirmPassword("")
-    setShowSignUp(false)
   }
 
   return (
@@ -74,7 +94,8 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className='text-white py-2.5 px-6 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full'
+            disabled={isLoading}
+            className='text-white py-2.5 px-6 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full disabled:opacity-50'
             type="text"
             placeholder='Enter your full name'
           />
@@ -83,7 +104,8 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className='text-white py-2.5 px-6 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full mt-3'
+            disabled={isLoading}
+            className='text-white py-2.5 px-6 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full mt-3 disabled:opacity-50'
             type="email"
             placeholder='Enter your email'
           />
@@ -94,14 +116,16 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength="6"
-              className='text-white py-2.5 px-6 pr-12 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full'
+              disabled={isLoading}
+              className='text-white py-2.5 px-6 pr-12 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full disabled:opacity-50'
               type={showPassword ? "text" : "password"}
               placeholder='Enter password'
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className='absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors'
+              disabled={isLoading}
+              className='absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors disabled:opacity-50'
             >
               {showPassword ? (
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,14 +146,16 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength="6"
-              className='text-white py-2.5 px-6 pr-12 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full'
+              disabled={isLoading}
+              className='text-white py-2.5 px-6 pr-12 sm:py-3 sm:px-9 border-purple-400 border-2 rounded-full outline-none bg-transparent text-base sm:text-xl placeholder:text-gray-400 w-full disabled:opacity-50'
               type={showConfirmPassword ? "text" : "password"}
               placeholder='Confirm password'
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className='absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors'
+              disabled={isLoading}
+              className='absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-purple-400 transition-colors disabled:opacity-50'
             >
               {showConfirmPassword ? (
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,9 +176,17 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
 
           <button
             type="submit"
-            className='transition-transform hover:scale-110 duration-300 py-2 px-5 border-none rounded-full outline-none bg-gradient-to-r from-purple-400 to-red-300 text-lg sm:text-xl mt-6 sm:mt-7 min-w-[120px]'
+            disabled={isLoading}
+            className='transition-transform hover:scale-110 duration-300 py-2 px-5 border-none rounded-full outline-none bg-gradient-to-r from-purple-400 to-red-300 text-lg sm:text-xl mt-6 sm:mt-7 min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100'
           >
-            Sign Up
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Signing up...
+              </div>
+            ) : (
+              'Sign Up'
+            )}
           </button>
         </form>
 
@@ -160,7 +194,8 @@ const SignUp = ({ setShowSignUp, handleLogin }) => {
           Already have an account?{' '}
           <button 
             onClick={() => setShowSignUp(false)}
-            className='text-purple-400 hover:text-purple-300 hover:underline font-medium transition-colors'>
+            disabled={isLoading}
+            className='text-purple-400 hover:text-purple-300 hover:underline font-medium transition-colors disabled:opacity-50'>
             Login here
           </button>
         </div>
